@@ -9,12 +9,35 @@ services:
     environment:
       - PORT=3000
       - NODE_ENV=development
+    env_file:
+      - .env
     volumes:
       - .:/app
       - /app/node_modules
     command: npm run dev
+    depends_on:
+      db:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/"]
       interval: 30s
       timeout: 3s
       retries: 3
+
+  db:
+    image: postgres:16-alpine
+    container_name: node-docker-app-db
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"     # 外からpsqlしたい時だけ。不要なら消してOK
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -h 127.0.0.1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pgdata:
