@@ -1,0 +1,17 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: node-docker-app
+    ports:
+      - "${PORT}:3000"
+    env_file:
+      - .env.production
+    command: npm start
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT}/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
