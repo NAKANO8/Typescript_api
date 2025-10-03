@@ -16,7 +16,7 @@ services:
     container_name: node-docker-app-dev
     # Nginx経由だけにするなら下の ports は消してOK。直アクセスしたいなら残す
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"  # 本番では必ず消す。
     environment:
       - PORT=3000
       - NODE_ENV=development
@@ -41,7 +41,7 @@ services:
     env_file:
       - .env
     ports:
-      - "5432:5432"       # psql で外から繋がないなら外してOK
+      - "127.0.0.1:5432:5432"       # psql で外から繋がないなら外してOK 本番では必ず消す。
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
